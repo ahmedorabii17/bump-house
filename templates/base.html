@@ -111,12 +111,34 @@
 <body>
 
   <nav class="navbar navbar-expand-lg sticky-top mb-0">
-    <div class="container justify-content-center">
+    <div class="container justify-content-center position-relative">
       <a class="navbar-brand d-flex align-items-center gap-2" href="{{ url_for('index') }}">
         <img src="{{ url_for('static', filename='logo.jpeg') }}" alt="Pump House Logo"
           style="height:42px;width:42px;object-fit:cover;border-radius:50%;">
         <span>Pump <span style="color:#E85D24">House</span></span>
       </a>
+      <div class="position-absolute" style="left:12px;">
+        <div class="dropdown">
+          <button class="btn btn-sm btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
+            <i class="bi bi-three-dots-vertical"></i>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-start">
+            <li>
+              <a class="dropdown-item" href="{{ url_for('export_csv') }}">
+                <i class="bi bi-download me-2"></i> تحميل CSV
+              </a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+            <li>
+              <a class="dropdown-item text-danger" href="{{ url_for('logout') }}">
+                <i class="bi bi-box-arrow-left me-2"></i> خروج
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
   </nav>
 
