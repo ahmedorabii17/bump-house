@@ -122,14 +122,17 @@ def member_detail(id):
 
 @app.route("/member/<int:id>/renew", methods=["POST"])
 def renew(id):
-    member = Member.query.get_or_404(id)
-    days   = int(request.form.get("days", member.days))
-    amount = request.form.get("amount")
+    member    = Member.query.get_or_404(id)
+    days      = int(request.form.get("days", member.days))
+    amount    = request.form.get("amount")
+    new_start = request.form.get("new_start")
 
-    # Renew from today or from end_date, whichever is later
-    new_start = max(date.today(), member.end_date)
-    member.start  = new_start
-    member.days   = days
+    if not new_start:
+        flash("لازم تحدد تاريخ التجديد", "error")
+        return redirect(url_for("member_detail", id=id))
+
+    member.start = date.fromisoformat(new_start)
+    member.days  = days
     if amount:
         member.amount = int(amount)
 
