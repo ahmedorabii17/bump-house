@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+{% block title %}الداشبورد — Bump House{% endblock %}
+
+{% block content %}
+
+{# ── Stats ── #}
+<div class="row g-3 mb-4">
+  <div class="col-4">
+    <div class="stat-card text-center">
+      <div class="stat-num" style="color:#3B6D11">{{ counts.ok }}</div>
+      <div class="text-muted small">تمام</div>
+    </div>
+  </div>
+  <div class="col-4">
+    <div class="stat-card text-center">
+      <div class="stat-num" style="color:#BA7517">{{ counts.warning }}</div>
+      <div class="text-muted small">قرب يخلص</div>
+    </div>
+  </div>
+  <div class="col-4">
+    <div class="stat-card text-center">
+      <div class="stat-num" style="color:#A32D2D">{{ counts.expired }}</div>
+      <div class="text-muted small">خلص</div>
+    </div>
+  </div>
+</div>
+
+{# ── Alerts for expiring ── #}
+{% if counts.warning > 0 or counts.expired > 0 %}
+<div class="alert mb-4" style="background:#FAEEDA;color:#854F0B;border:none;border-radius:12px">
+  <i class="bi bi-bell-fill me-2"></i>
+  {% if counts.expired > 0 %}
+    <strong>{{ counts.expired }} عضو</strong> اشتراكهم خلص —
+  {% endif %}
+  {% if counts.warning > 0 %}
+    <strong>{{ counts.warning }} عضو</strong> اشتراكهم قرب ينتهي
+  {% endif %}
+</div>
+{% endif %}
+
+{# ── Search + Sort ── #}
+<form method="get" class="d-flex gap-2 mb-3">
+  <div class="input-group">
+    <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
+    <input type="text" name="q" value="{{ q }}" class="form-control border-start-0 ps-0"
+           placeholder="ابحث باسم العضو...">
+  </div>
+  <select name="sort" class="form-select w-auto" onchange="this.form.submit()">
+    <option value="status" {% if sort=='status' %}selected{% endif %}>ترتيب: الحالة</option>
+    <option value="name"   {% if sort=='name'   %}selected{% endif %}>ترتيب: الاسم</option>
+    <option value="end"    {% if sort=='end'     %}selected{% endif %}>ترتيب: تاريخ الانتهاء</option>
+  </select>
+</form>
+
+{# ── Members list ── #}
+{% if members %}
+  {% for m in members %}
+  <a href="{{ url_for('member_detail', id=m.id) }}" class="text-decoration-none">
+    <div class="card member-card mb-2 p-3">
+      <div class="d-flex align-items-center gap-3">
+
+        {# Avatar #}
+        {% set colors = ['#534AB720','#0F6E5620','#993C1D20','#185FA520','#3B6D1120'] %}
+        {% set tcols  = ['#534AB7',  '#0F6E56',  '#993C1D',  '#185FA5',  '#3B6D11'  ] %}
+        {% set ci = loop.index0 % 5 %}
+        <div class="avatar" style="background:{{ colors[ci] }};color:{{ tcols[ci] }}">
+          {{ m.name[0] }}{{ m.name.split(' ')[1][0] if m.name.split(' ')|length > 1 else '' }}
+        </div>
+
+        {# Info #}
+        <div class="flex-grow-1">
+          <div class="fw-500">{{ m.name }}</div>
+          <div class="text-muted small">
+            اشتراك {{ m.sub_label }} · ينتهي {{ m.end_date.strftime('%d/%m/%Y') }}
+            {% if m.amount %} · {{ m.amount }} جنيه{% endif %}
+          </div>
+        </div>
+
+        {# Badge #}
+        <div class="text-center">
+          <span class="badge badge-{{ m.status }} rounded-pill px-3 py-2">{{ m.status_label }}</span>
+          <div class="text-muted" style="font-size:11px;margin-top:4px">
+            {% if m.days_left < 0 %}
+              خلص من {{ m.days_left|abs }} يوم
+            {% elif m.days_left == 0 %}
+              آخر يوم!
+            {% else %}
+              باقي {{ m.days_left }} يوم
+            {% endif %}
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </a>
+  {% endfor %}
+
+{% else %}
+  <div class="text-center text-muted py-5">
+    <i class="bi bi-people" style="font-size:2.5rem"></i>
+    <p class="mt-3">
+      {% if q %}مش لاقي نتايج لـ "{{ q }}"{% else %}مفيش أعضاء لسه — ابدأ بإضافة أول عضو!{% endif %}
+    </p>
+    {% if not q %}
+    <a href="{{ url_for('add') }}" class="btn btn-primary">+ إضافة أول عضو</a>
+    {% endif %}
+  </div>
+{% endif %}
+
+{% endblock %}

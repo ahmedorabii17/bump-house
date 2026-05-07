@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}عضو جديد — Bump House{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-6">
+    <div class="card p-4">
+      <h5 class="mb-4">تسجيل عضو جديد</h5>
+      <form method="post">
+
+        <div class="mb-3">
+          <label class="form-label">الاسم <span class="text-danger">*</span></label>
+          <input type="text" name="name" class="form-control" placeholder="محمد أحمد" required autofocus>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">رقم الموبايل</label>
+          <input type="tel" name="phone" class="form-control" placeholder="01xxxxxxxxx">
+        </div>
+
+        <div class="row g-3 mb-3">
+          <div class="col">
+            <label class="form-label">تاريخ بداية الاشتراك <span class="text-danger">*</span></label>
+            <input type="date" name="start" class="form-control" value="{{ today }}" required>
+          </div>
+          <div class="col">
+            <label class="form-label">نوع الاشتراك <span class="text-danger">*</span></label>
+            <select name="days" class="form-select" required>
+              <option value="30">شهر (30 يوم)</option>
+              <option value="60">شهرين (60 يوم)</option>
+              <option value="90">3 شهور (90 يوم)</option>
+              <option value="180">6 شهور (180 يوم)</option>
+              <option value="365">سنة (365 يوم)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">المبلغ المدفوع (جنيه)</label>
+          <input type="number" name="amount" class="form-control" placeholder="300" min="0">
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label">ملاحظات</label>
+          <input type="text" name="notes" class="form-control" placeholder="أي معلومة تانية...">
+        </div>
+
+        <div class="d-flex gap-2">
+          <button type="submit" class="btn btn-primary flex-grow-1">حفظ العضو</button>
+          <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">إلغاء</a>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
